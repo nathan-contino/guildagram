@@ -51,3 +51,12 @@ def test_send_message_failure_invalid_message_empty(client):
     assert rv[0]['success'] == False
     assert 'Message text is not valid.' in rv[0]['message']
     assert rv[1] == 400
+
+def test_get_messages_latest_first(client):
+    guildagram.send_message_handler('bob' + rand_suffix, 'joe' + rand_suffix, 'hello joe this is bob')
+    guildagram.send_message_handler('bob' + rand_suffix, 'joe' + rand_suffix, 'hello joe this is bob again')
+    rv = guildagram.get_messages('bob' + rand_suffix, 'joe' + rand_suffix)
+    assert len(rv[0]['messages']) == 2
+    assert 'hello joe this is bob again' in rv[0]['messages'][0]['content']
+    assert rv[0]['messages'][0]['when'] >= rv[0]['messages'][1]['when']
+    assert rv[1] == 200

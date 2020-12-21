@@ -73,8 +73,8 @@ def get_messages(receiver, sender):
 	if sender != None:
 		if not is_valid_user(sender):
 			return create_result(False, "Sender is not valid.", status.HTTP_400_BAD_REQUEST)
-		matched_messages["messages"] = Message.objects(receiver=receiver, sender=sender, when__gte=thirty_days_ago).limit(MAX_MESSAGES_PER_REQUEST)
+		matched_messages["messages"] = Message.objects(receiver=receiver, sender=sender, when__gte=thirty_days_ago).order_by('-when').limit(MAX_MESSAGES_PER_REQUEST)
 	else:
-		matched_messages["messages"] = Message.objects(receiver=receiver, when__gte=thirty_days_ago).limit(MAX_MESSAGES_PER_REQUEST)
+		matched_messages["messages"] = Message.objects(receiver=receiver, when__gte=thirty_days_ago).order_by('-when').limit(MAX_MESSAGES_PER_REQUEST)
 
 	return (matched_messages, status.HTTP_200_OK)
